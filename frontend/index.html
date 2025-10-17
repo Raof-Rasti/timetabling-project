@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سامانه تولید برنامه هفتگی</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* --- استایل کلی صفحه --- */
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: #f5f7fb;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    /* --- هدر --- */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-size: 1.9rem;
+      color: #1e88e5;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    /* --- کارت‌ها --- */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    /* --- فرم آپلود --- */
+    .upload-section form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    input[type="file"] {
+      font-size: 0.9rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      width: 100%;
+      max-width: 350px;
+      background: #fafafa;
+    }
+
+    /* --- دکمه‌ها --- */
+    .btn-primary, .btn-secondary {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .btn-primary {
+      background: #1e88e5;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1565c0;
+    }
+    .btn-secondary {
+      background: #43a047;
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: #2e7d32;
+    }
+
+    /* --- نتایج و جدول --- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px 12px;
+      margin-bottom: 16px;
+    }
+
+    .actions {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    table thead {
+      background: #e3f2fd;
+      color: #0d47a1;
+    }
+    table th, table td {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    table tbody tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    /* --- خطا --- */
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* --- فوتر --- */
+    footer {
+      text-align: center;
+      color: #777;
+      font-size: 0.85rem;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📅 سامانه تولید برنامه هفتگی</h1>
+      <p class="subtitle">فایل اکسل خود را بارگذاری کنید تا برنامه‌ٔ کلاسی به‌صورت خودکار تولید شود.</p>
+    </header>
+
+    <section class="card upload-section">
+      <form id="uploadForm">
+        <label for="file">انتخاب فایل اکسل ورودی:</label>
+        <input type="file" id="file" name="file" accept=".xlsx" required />
+        <button type="submit" class="btn-primary">🚀 اجرای زمان‌بند</button>
+      </form>
+    </section>
+
+    <section id="result" class="card hidden">
+      <div class="stats">
+        <div><strong>نمره قیود نرم:</strong> <span id="softScore">-</span></div>
+        <div><strong>تعداد جلسات:</strong> <span id="countSessions">-</span></div>
+        <div><strong>خطاهای سخت:</strong> <span id="countHard">-</span></div>
+        <div><strong>جزئیات نرم:</strong> <span id="countSoft">-</span></div>
+      </div>
+
+      <div class="actions">
+        <a id="downloadLink" class="btn-secondary" href="#" download>⬇️ دانلود خروجی اکسل</a>
+      </div>
+
+      <h3>پیش‌نمایش ۵۰ ردیف اول برنامه</h3>
+      <div class="table-wrapper">
+        <table id="previewTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="error" class="error hidden"></div>
+
+    <footer>
+      <p> Raof Rasti    </footer>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    window.API_BASE = window.API_BASE || 'http://localhost:5000';
+  </script>
+</body>
+</html>
