@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>ورود | سامانه زمان‌بندی</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-app: radial-gradient(circle at top, #1e293b, #020617);
+  --card: #111827;
+  --border: #273449;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --primary: #38bdf8;
+  --primary-btn: linear-gradient(135deg, #38bdf8, #22d3ee);
+  --btn-text: #020617;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-app);
+  font-family: 'Vazirmatn', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+
+h1 {
+  margin: 0 0 6px;
+  color: var(--primary);
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: .9rem;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text);
+  font-size: .95rem;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  border: none;
+  background: var(--primary-btn);
+  color: var(--btn-text);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: .9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>🔐 ورود</h1>
+  <div class="subtitle">سامانه هوشمند زمان‌بندی</div>
+
+  <input id="username" placeholder="نام کاربری" />
+  <input id="password" type="password" placeholder="رمز عبور" />
+
+  <button onclick="login()">ورود به سامانه</button>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>

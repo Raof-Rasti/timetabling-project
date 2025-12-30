@@ -1,74 +1,60 @@
-const form = document.getElementById('uploadForm');
-const errBox = document.getElementById('error');
-const resultBox = document.getElementById('result');
-const tablesContainer = document.getElementById('tables-container');
-
-function buildTable(title, rows) {
-  const section = document.createElement('div');
-  section.className = 'table-wrapper';
-  const heading = document.createElement('h3');
-  heading.textContent = title;
-
-  const table = document.createElement('table');
-  const thead = document.createElement('thead');
-  const tbody = document.createElement('tbody');
-
-  if (!rows || rows.length === 0 || (rows[0] && rows[0].error)) {
-    thead.innerHTML = '';
-    tbody.innerHTML = `<tr><td>❌ خطا یا داده‌ای موجود نیست</td></tr>`;
-  } else {
-    const headers = Object.keys(rows[0]);
-    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
-    tbody.innerHTML = rows
-      .map(r => `<tr>${headers.map(h => `<td>${r[h] ?? ''}</td>`).join('')}</tr>`)
-      .join('');
-  }
-
-  table.appendChild(thead);
-  table.appendChild(tbody);
-  section.appendChild(heading);
-  section.appendChild(table);
-  tablesContainer.appendChild(section);
-}
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  errBox.classList.add('hidden');
-  resultBox.classList.remove('hidden');
-  tablesContainer.innerHTML = '<p>⏳ در حال پردازش فایل‌ها...</p>';
-
-  const body = new FormData();
-  const f1 = document.getElementById('file_teacher').files[0];
-  const f2 = document.getElementById('file_all_teachers').files[0];
-  const f3 = document.getElementById('file_class').files[0];
-  const f4 = document.getElementById('file_all_classes').files[0];
-
-  if (!f1 || !f2 || !f3 || !f4) {
-    tablesContainer.innerHTML = '';
-    errBox.textContent = 'لطفاً هر چهار فایل اکسل را انتخاب کنید.';
-    errBox.classList.remove('hidden');
+async function send() {
+  const file = document.getElementById("file_excel").files[0];
+  if (!file) {
+    alert("فایل را انتخاب کنید");
     return;
   }
 
-  body.append('file_teacher', f1);
-  body.append('file_all_teachers', f2);
-  body.append('file_class', f3);
-  body.append('file_all_classes', f4);
+  const fd = new FormData();
+  fd.append("file_excel", file);
 
-  try {
-    // relative path → same origin → avoids CORS & 404
-    const res = await fetch('/api/schedule', { method: 'POST', body });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'خطا در پردازش فایل‌ها');
+  const res = await fetch("/api/schedule", {
+    method: "POST",
+    body: fd
+  });
 
-    tablesContainer.innerHTML = '';
-    buildTable('📘 برنامهٔ یک استاد', data.teacher_schedule);
-    buildTable('👨‍🏫 همهٔ اساتید', data.all_teachers);
-    buildTable('🏫 یک کلاس', data.class_schedule);
-    buildTable('🏢 همهٔ کلاس‌ها', data.all_classes);
-  } catch (err) {
-    tablesContainer.innerHTML = '';
-    errBox.textContent = err.message;
-    errBox.classList.remove('hidden');
+  const data = await res.json();
+  if (data.error) {
+    alert(data.error);
+    return;
   }
-});
+
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+
+  buildTable("⏰ تایم‌های یک کلاس", data.one_class);
+  buildTable("🏫 تایم‌های همه کلاس‌ها", data.all_classes);
+  buildTable("👨‍🏫 تایم‌های یک استاد", data.one_teacher);
+  buildTable("👥 تایم‌های همه اساتید", data.all_teachers);
+}
+
+
+function buildTable(title, rows) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const h = document.createElement("h3");
+  h.textContent = title;
+  card.appendChild(h);
+
+  const table = document.createElement("table");
+
+  if (rows.length === 0) {
+    table.innerHTML = "<tr><td>داده‌ای موجود نیست</td></tr>";
+    card.appendChild(table);
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+  table.innerHTML += `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+
+  rows.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    if (i > 0) tr.classList.add("blur");
+    tr.innerHTML = headers.map(h => `<td>${row[h]}</td>`).join("");
+    table.appendChild(tr);
+  });
+
+  card.appendChild(table);
+  document.getElementById("results").appendChild(card);
+}

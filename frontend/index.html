@@ -1,140 +1,263 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>سامانه تولید برنامه هفتگی</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>📅 سامانه تولید برنامه هفتگی</h1>
-      <p class="subtitle">چهار فایل اکسل خود را بارگذاری کنید تا برنامه‌ها نمایش داده شوند.</p>
-         
+<meta charset="UTF-8" />
+<title>سامانه هوشمند زمان‌بندی</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
+/* ================== THEME VARIABLES ================== */
+/* DARK (default) */
+:root {
+  --bg: #020617;
+  --bg-app: radial-gradient(circle at top, #1e293b, #020617);
+  --card: #111827;
+  --soft: #1f2937;
+  --border: #273449;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --primary: #38bdf8;
+  --primary-btn: linear-gradient(135deg, #38bdf8, #22d3ee);
+  --btn-text: #020617;
+  --danger: #f87171;
+}
+
+/* LIGHT */
+#theme-toggle:checked ~ .app {
+  --bg: #f5f7fb;
+  --bg-app: #f5f7fb;
+  --card: #ffffff;
+  --soft: #f1f5f9;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-btn: #2563eb;
+  --btn-text: #ffffff;
+  --danger: #dc2626;
+}
+
+/* ================== BASE ================== */
 * { box-sizing: border-box; }
+
 body {
-  font-family: 'Vazirmatn', sans-serif;
-  background: #f5f7fb;
-  color: #222;
   margin: 0;
-  padding: 0;
-  direction: rtl;
+  font-family: 'Vazirmatn', sans-serif;
 }
-.container { max-width: 900px; margin: 40px auto; padding: 0 16px; }
 
-/* ——— هدر ——— */
-header { text-align: center; margin-bottom: 30px; }
-header h1 { font-size: 1.9rem; color: #1e88e5; margin-bottom: 10px; }
-.subtitle { color: #555; font-size: 0.95rem; }
+#theme-toggle { display: none; }
 
-/* ——— کارت‌ها ——— */
+.app {
+  min-height: 100vh;
+  background: var(--bg-app);
+  color: var(--text);
+  transition: background .3s ease, color .3s ease;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* ================== HEADER ================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  color: var(--primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.theme-switch {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* ================== CARD ================== */
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-  padding: 24px;
-  margin-bottom: 24px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px;
+  margin-bottom: 28px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
 }
 
-/* ——— فرم آپلود ——— */
-.upload-section form {
+.upload-box {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
+  align-items: center;
+  gap: 14px;
 }
+
 input[type="file"] {
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 8px;
   width: 100%;
-  max-width: 350px;
-  background: #fafafa;
-}
-
-/* ——— دکمه‌ها ——— */
-.btn-primary, .btn-secondary {
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-.btn-primary { background: #1e88e5; color: #fff; }
-.btn-primary:hover { background: #1565c0; }
-.btn-secondary { background: #43a047; color: #fff; }
-.btn-secondary:hover { background: #2e7d32; }
-
-/* ——— جدول‌ها ——— */
-.table-wrapper {
-  overflow-x: auto;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-}
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-table thead { background: #e3f2fd; color: #0d47a1; }
-table th, table td { padding: 8px 10px; border: 1px solid #ddd; text-align: center; }
-table tbody tr:nth-child(even) { background: #f9f9f9; }
-
-/* ——— خطا / حالت‌ها ——— */
-.error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
+  max-width: 420px;
   padding: 12px;
-  border-radius: 8px;
-  margin-top: 16px;
-  text-align: center;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: var(--soft);
+  color: var(--muted);
 }
-.hidden { display: none; }
 
-/* ——— فوتر ——— */
-footer { text-align: center; color: #777; font-size: 0.85rem; margin-top: 30px; }
+/* ================== BUTTON ================== */
+button {
+  background: var(--primary-btn);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 14px;
+  padding: 12px 32px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+}
+
+/* ================== TABLE ================== */
+.table-wrapper {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 26px;
+  position: relative;
+}
+
+.table-title {
+  padding: 14px 18px;
+  background: var(--soft);
+  color: var(--primary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th {
+  background: var(--soft);
+  color: var(--text);
+  padding: 11px;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(0,0,0,0.02);
+}
+
+/* ================== PAYWALL BLUR ================== */
+.blur {
+  position: relative;
+}
+
+.blur td {
+  filter: blur(10px) grayscale(100%);
+  opacity: 0.2;
+}
+
+.blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.blur::after {
+  content: "🔒 برای مشاهده کامل اشتراک تهیه کنید";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--danger);
+  pointer-events: none;
+}
+
+/* ================== FOOTER ================== */
+footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
 </style>
+</head>
+
+<body>
+
+<input type="checkbox" id="theme-toggle">
+
+<div class="app">
+  <div class="container">
+
+    <header>
+      <button onclick="logout()" style="font-size:.8rem">
+  خروج
+</button>
+      <div>
+        <h1>📅 سامانه هوشمند زمان‌بندی</h1>
+        <div class="subtitle">نمایش برنامه کلاس‌ها و اساتید</div>
+      </div>
+
+      <label for="theme-toggle" class="theme-switch">
+        🌙 دارک / لایت ☀️
+      </label>
     </header>
 
-    <section class="card upload-section">
-      <form id="uploadForm">
-        <label for="file_teacher">۱- فایل برنامه یک استاد:</label>
-        <input type="file" id="file_teacher" name="file_teacher" accept=".xlsx" required />
+    <div class="card upload-box">
+      <input type="file" id="file_excel" accept=".xlsx" />
+      <button onclick="send()">🚀 اجرای زمان‌بند</button>
+    </div>
 
-        <label for="file_all_teachers">۲- فایل برنامه همه اساتید:</label>
-        <input type="file" id="file_all_teachers" name="file_all_teachers" accept=".xlsx" required />
-
-        <label for="file_class">۳- فایل برنامه یک کلاس:</label>
-        <input type="file" id="file_class" name="file_class" accept=".xlsx" required />
-
-        <label for="file_all_classes">۴- فایل برنامه همه کلاس‌ها:</label>
-        <input type="file" id="file_all_classes" name="file_all_classes" accept=".xlsx" required />
-
-        <button type="submit" class="btn-primary">🚀 اجرای زمان‌بند</button>
-      </form>
-    </section>
-
-    <section id="result" class="card hidden">
-      <h2>نتایج</h2>
-      <div id="tables-container"></div>
-    </section>
-
-    <div id="error" class="error hidden"></div>
+    <div id="results"></div>
 
     <footer>
-      <p>Raof Rasti</p>
+      Raof Rasti • Smart Timetabling System
     </footer>
-  </div>
 
-  <script src="script.js"></script>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="auth.js"></script>
+<script>
+  requireAuth();
+</script>
+<script src="script.js"></script>
+
 </body>
 </html>
